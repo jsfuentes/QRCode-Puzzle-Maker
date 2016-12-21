@@ -2,45 +2,69 @@ from PIL import Image
 #(255, 255, 255, 255) is white
 #(0, 0, 0, 255) is black
 
-def findStart(im):
-    startX = 0
-    startY = 0
+def findStart(im, pix, color, startX=0, startY=0):
     done = False
-    while done == False:
-        if pix[startX, startY][0] <= 128:
-            done = True
-        else:
-            pix[startX, startY] = (0, 128, 256, 256)
-            if startX <= startY:
-                startX += 1
-            else:
-                startY += 1
-    return startX, startY
-
-im = Image.open('smallCode.png')
-pix = im.load()
-print(im.size)
-done = False
-startX, startY = findStart(im)
-box = 0
-
-print(startX, startY, pix[startX, startY])
-
-done = False
-for x in range(startX, im.size[0]):
-    if done == True:
-        break
-    for y in range(startY, x+1):
-        if pix[x, y][0] >= 128:
-            print(pix[x, y])
-            print(x, y)
-            done = True
-            box = (x-startX, y-startY)
+    for k in range(startX, min(im.size[0], im.size[1])):
+        if done:
             break
-        pix[x, y] = (128, 128, 128, 256)
+        x = startX
+        y = k + startY
+        while y >= 0:
+            if pix[x, y][0] <= 128 and color == "black":
+                done = True
+                break
+            elif pix[x, y][0] > 128 and color == "white":
+                done = True
+                break
+            else:
+                if color == "black":
+                    pix[x, y] = (0, 128, 256, 256)
+                elif color == "white":
+                    pix[x, y] = (256, 128, 0, 256)
+                x += 1
+                y -= 1
+    return x, y
 
-print("FINAL:", box)
+def findBoxSize(im, startX, startY, pix):
+    box = 0
+    done = False
+    for x in range(startX, im.size[0]):
+        if done == True:
+            break
+        for y in range(startY, (startY-startX)+x+1):
+            if pix[x, y][0] >= 240:
+                print("Corner: ",pix[x, y])
+                print("Coordinates: ", x, y)
+                pix[x,y] = (256, 0, 0, 256)
+                done = True
+                box = (x-startX, y-startY)
+                break
+            pix[x, y] = (128, 128, 128, 256)
+    return box
+
+def colorBox(startX, startY, box, pix):
+    for x in range(startX, box[0]+startX):
+        for y in range(startY, box[1]+startY):
+            pix[x, y] = (128, 56, 128, 256)
+
+def drawGridLines(im, startX, startY, box, pix):
+    for x in range(startX, im.size[0]):
+        #print(x-startX+1, box[0], x-startX+1%box[0])
+        if (x-startX+1) % box[0] == 0:
+            for y in range(startY, im.size[1]):
+                pix[x, y] = (256, 56, 128, 256)
+    for y in range(startY, im.size[1]):
+        if (y-startY+1) % box[1] == 0:
+            for x in range(startX, im.size[0]):
+                pix[x, y] = (256, 56, 128, 256)
 
 
-
+im = Image.open('FINISH LINE.png')
+pix = im.load()
+print("SIZE: ", im.size)
+startX, startY = findStart(im, pix, "black")
+box = findBoxSize(im, startX, startY, pix)
+colorBox(startX, startY, box, pix)
+print("Box:", box)
+drawGridLines(im, startX, startY, box, pix)
 im.save('Test.png')
