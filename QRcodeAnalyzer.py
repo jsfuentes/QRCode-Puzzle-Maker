@@ -32,7 +32,7 @@ def findBoxSize(im, startX, startY, pix):
         if done == True:
             break
         for y in range(startY, (startY-startX)+x+1):
-            if pix[x, y][0] >= 250:
+            if pix[x, y][0] >= 128:
                 print("Corner: ",pix[x, y])
                 print("Coordinates: ", x, y)
                 pix[x,y] = (256, 0, 0, 256)
@@ -42,38 +42,55 @@ def findBoxSize(im, startX, startY, pix):
             pix[x, y] = (128, 128, 128, 256)
     return box
 
-def colorBox(startX, startY, box, pix):
-    for x in range(startX, box[0]+startX):
-        for y in range(startY, box[1]+startY):
-            pix[x, y] = (128, 56, 128, 256)
+def colorBox(im,startX, startY, box, pix, color=(128, 56, 128, 256)):
+    for x in range(startX, min(box[0]+startX, im.size[0])):
+        for y in range(startY, min(box[1]+startY, im.size[1])):
+            pix[x, y] = color
 
 def drawGridLines(im, startX, startY, box, pix):
+    counter = 1
+    offset = 0
     for x in range(startX, im.size[0]):
         #print(x-startX+1, box[0], x-startX+1%box[0])
-        if (x-startX) % box[0] == 0:
+        if counter == 4:
+            offset += 1
+            counter = 1
+        if (x-startX-offset) % box[0] == 0:
+            counter += 1
             for y in range(startY, im.size[1]):
                 pix[x, y] = (256, 56, 128, 256)
+    counter = 1
+    offset = 0
     for y in range(startY, im.size[1]):
-        if (y-startY) % box[1] == 0:
+        if counter == 4:
+            offset += 1
+            counter = 1
+        if (y-startY-offset) % box[1] == 0:
+            counter += 1
             for x in range(startX, im.size[0]):
                 pix[x, y] = (256, 56, 128, 256)
 
 def averageEachBox(im, startX, startY, box, pix):
-    for i in range(0, im.size[0], box[0]):
-        for j in range(0, im.size[0], box[1]):
+    for i in range(startX, im.size[0], box[0]):
+        for j in range(startY, im.size[1], box[1]):
             total = 0
             number = 0
-            for x in range(i, i+box[0]):
-                for y in range(j, j+box[1]):
+            for x in range(i, min(i+box[0], im.size[0])):
+                for y in range(j, min(j+box[1], im.size[1])):
                     total += pix[x, y][0]
                     number += 1
+            if total/number > 120:
+                colorBox(im, i, j, box, pix, (256, 256, 256, 256))
+            else:
+                colorBox(im, i, j, box, pix, (0, 0, 0, 256))
 
 im = Image.open('FINISH LINE.png')
 pix = im.load()
 print("SIZE: ", im.size)
 startX, startY = findStart(im, pix, "black")
 box = findBoxSize(im, startX, startY, pix)
-colorBox(startX, startY, box, pix)
+colorBox(im, startX, startY, box, pix)
 print("Box:", box)
+#averageEachBox(im, startX,startY, box, pix)
 drawGridLines(im, startX, startY, box, pix)
-im.save('Test.png')
+im.save('TestLines.png')
