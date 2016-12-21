@@ -164,11 +164,13 @@ for string in strings:
     for str in string:
         if str[0] == '1':
                 str = str[1:]
+        if len(str) > 4:
+            if str[::2] in strToWords and str[1::2] in strToWords:
+                print(str, strToWords[str[::2]], strToWords[str[1::2]])
+                break
         if str in strToWords:
             print(str, strToWords[str])
-        else:
-            if str[:4] in strToWords and str[4:] in strToWords:
-                  print(str, strToWords[str[:4]], strToWords[str[4:]])
+
 
 im.save('TestLines.png')
 

@@ -25,7 +25,7 @@
         <entry file="file://$PROJECT_DIR$/wordSelector.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="36" column="48" selection-start-line="36" selection-start-column="48" selection-end-line="36" selection-end-column="48" />
+              <caret line="36" column="0" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -34,8 +34,8 @@
       <file leaf-file-name="QRcodeAnalyzer.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/QRcodeAnalyzer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.058020476">
-              <caret line="1" column="19" selection-start-line="1" selection-start-column="19" selection-end-line="1" selection-end-column="19" />
+            <state vertical-scroll-proportion="0.5460751">
+              <caret line="168" column="70" selection-start-line="168" selection-start-column="70" selection-end-line="168" selection-end-column="70" />
               <folding>
                 <element signature="e#0#21#0" expanded="true" />
               </folding>
@@ -98,8 +98,8 @@
       <list>
         <option value="$PROJECT_DIR$/createWords.py" />
         <option value="$PROJECT_DIR$/words.txt" />
-        <option value="$PROJECT_DIR$/QRcodeAnalyzer.py" />
         <option value="$PROJECT_DIR$/wordSelector.py" />
+        <option value="$PROJECT_DIR$/QRcodeAnalyzer.py" />
       </list>
     </option>
   </component>
@@ -433,15 +433,15 @@
     <entry file="file://$PROJECT_DIR$/wordSelector.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="36" column="48" selection-start-line="36" selection-start-column="48" selection-end-line="36" selection-end-column="48" />
+          <caret line="36" column="0" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/QRcodeAnalyzer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.058020476">
-          <caret line="1" column="19" selection-start-line="1" selection-start-column="19" selection-end-line="1" selection-end-column="19" />
+        <state vertical-scroll-proportion="0.5460751">
+          <caret line="168" column="70" selection-start-line="168" selection-start-column="70" selection-end-line="168" selection-end-column="70" />
           <folding>
             <element signature="e#0#21#0" expanded="true" />
           </folding>

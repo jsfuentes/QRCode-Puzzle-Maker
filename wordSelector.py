@@ -27,10 +27,8 @@ def intializeDicts():
         number = "".join(sorted(set(failNumber)))
         if number in dic:
             dic[number].append(p)
-            print(number, dic[number])
         else:
             dic[number] = [p]
-            print(number, dic[number])
     return dic
 
 #each word gets all its letters converted to blocknumbers
