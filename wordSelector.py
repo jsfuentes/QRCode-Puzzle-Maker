@@ -10,6 +10,7 @@ def makeWord(num:str):
     mySet = set()
 
     dictionary = dict()
+    dic = dict()
     for x in numAlphabet:
         if(x == '7' or x == '9'):
             dictionary[x] = alphabet[i] + alphabet[i+1] + alphabet[i+2] + alphabet[i+3]
@@ -17,12 +18,17 @@ def makeWord(num:str):
         else:
             dictionary[x] = alphabet[i] + alphabet[i+1] + alphabet[i+2]
             i += 3
-    for q in num:
-        if(q != 1 and q != 0):
-            letters += dictionary[q]
-    for j in itertools.permutations(letters):
-        print(''.join(j))
-makeWord('23')
+    for p in words:
+        number = ''
+        for a in p:
+            for l in dictionary:
+                if(a in dictionary[l]):
+                    number += l
+        dic[number] = p
+    if(num in dic):
+        print(dic[num])
+            
+makeWord('4865')
 #each word gets all its letters converted to blocknumbers
 #make the block numbers a set or ascending string so every word that fills those blocks has the same key
 #add word to a list with the block numbers filled as the key
