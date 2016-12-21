@@ -1,4 +1,5 @@
 from PIL import Image
+import wordSelector
 #(255, 255, 255, 255) is white
 #(0, 0, 0, 255) is black
 
@@ -158,5 +159,16 @@ for row in rows:
 strings = rowsToStrings(rows)
 for str in strings:
     print(str)
+strToWords = wordSelector.intializeDicts()
+for string in strings:
+    for str in string:
+        if str[0] == '1':
+                str = str[1:]
+        if str in strToWords:
+            print(str, strToWords[str])
+        else:
+            if str[:4] in strToWords and str[4:] in strToWords:
+                  print(str, strToWords[str[:4]], strToWords[str[4:]])
+
 im.save('TestLines.png')
 

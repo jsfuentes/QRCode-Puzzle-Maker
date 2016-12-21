@@ -2,7 +2,7 @@ f = open('words.txt', 'r')
 words = f.read().split()
 import itertools 
 #you need a function or something to map every letter to a block number
-def makeWord(num:str):
+def intializeDicts():
     numAlphabet = '23456789'
     alphabet = 'abcdefghijklmnopqrstuvwxyz'
     i = 0
@@ -19,16 +19,20 @@ def makeWord(num:str):
             dictionary[x] = alphabet[i] + alphabet[i+1] + alphabet[i+2]
             i += 3
     for p in words:
-        number = ''
+        failNumber = ''
         for a in p:
             for l in dictionary:
                 if(a in dictionary[l]):
-                    number += l
-        dic[number] = p
-    if(num in dic):
-        print(dic[num])
-            
-makeWord('4865')
+                    failNumber += l
+        number = "".join(sorted(set(failNumber)))
+        if number in dic:
+            dic[number].append(p)
+            print(number, dic[number])
+        else:
+            dic[number] = [p]
+            print(number, dic[number])
+    return dic
+
 #each word gets all its letters converted to blocknumbers
 #make the block numbers a set or ascending string so every word that fills those blocks has the same key
 #add word to a list with the block numbers filled as the key
