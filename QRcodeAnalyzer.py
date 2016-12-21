@@ -89,10 +89,50 @@ def getStartOfBlock(startX, startY, x, y, box):
     offsetY = int(y/2)
     return startX+(x*box[0])+offsetX, startY+(y*box[1])+offsetY
 
-def checkBlock(x, y):
+def checkBlock(startX, startY, box, pix):
+    total = 0
+    number = 0
     for x in range(startX, min(box[0]+startX, im.size[0])):
         for y in range(startY, min(box[1]+startY, im.size[1])):
-            
+            total+=pix[x, y][0]
+            number+=1
+    if total/number > 150:
+        return 0
+    else:
+        return 1
+
+def rowsToStrings(rows):
+    strings = []
+    for y in range(0, len(rows), 3):
+        if y + 2 >= len(rows):
+            break
+        string = []
+        for x in range(0, len(rows[0]), 3):
+            if x + 2 >= len(rows[0]):
+                break
+            str = ""
+            if rows[y][x]:
+                str += '1'
+            if rows[y][x+1]:
+                 str += '2'
+            if rows[y][x+2]:
+                str += '3'
+            if rows[y+1][x]:
+                str += '4'
+            if rows[y+1][x+1]:
+                str += '5'
+            if rows[y+1][x+2]:
+                str += '6'
+            if rows[y+2][x]:
+                str += '7'
+            if rows[y+2][x+1]:
+                str += '8'
+            if rows[y+2][x+2]:
+                str += '9'
+            string.append(str)
+        strings.append(string)
+    return strings
+
 
 im = Image.open('FINISH LINE.png')
 pix = im.load()
@@ -103,12 +143,20 @@ colorBox(im, startX, startY, box, pix)
 print("Box:", box)
 #averageEachBox(im, startX,startY, box, pix)
 drawGridLines(im, startX, startY, box, pix)
-for i in range(0, int(im.size[0]/box[0]-1)):
-    for j in range(0, int(im.size[1]/box[1]-1)):
+rows = []
+for j in range(0, int(im.size[1]/box[1]-1)):
+    row = []
+    for i in range(0, int(im.size[0]/box[0]-1)):
         curBoxX, curBoxY = getStartOfBlock(startX, startY, i, j, box)
-
-
+        black = checkBlock(curBoxX, curBoxY, box, pix)
+        if black:
+            colorBox(im, curBoxX, curBoxY, box, pix, (0, 256, 56, 256))
+        row.append(black)
+    rows.append(row)
+for row in rows:
+    print(row)
+strings = rowsToStrings(rows)
+for str in strings:
+    print(str)
 im.save('TestLines.png')
 
-row1 = ['123479', '12378', '1467', '234589', '134679', '12389', '123679']
-row2 = ['13467', '1245', '13469', '2368', '368', '258', '123456', ]
