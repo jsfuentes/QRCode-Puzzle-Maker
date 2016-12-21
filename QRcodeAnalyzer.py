@@ -84,6 +84,16 @@ def averageEachBox(im, startX, startY, box, pix):
             else:
                 colorBox(im, i, j, box, pix, (0, 0, 0, 256))
 
+def getStartOfBlock(startX, startY, x, y, box):
+    offsetX = int(x/2)
+    offsetY = int(y/2)
+    return startX+(x*box[0])+offsetX, startY+(y*box[1])+offsetY
+
+def checkBlock(x, y):
+    for x in range(startX, min(box[0]+startX, im.size[0])):
+        for y in range(startY, min(box[1]+startY, im.size[1])):
+            
+
 im = Image.open('FINISH LINE.png')
 pix = im.load()
 print("SIZE: ", im.size)
@@ -93,4 +103,12 @@ colorBox(im, startX, startY, box, pix)
 print("Box:", box)
 #averageEachBox(im, startX,startY, box, pix)
 drawGridLines(im, startX, startY, box, pix)
+for i in range(0, int(im.size[0]/box[0]-1)):
+    for j in range(0, int(im.size[1]/box[1]-1)):
+        curBoxX, curBoxY = getStartOfBlock(startX, startY, i, j, box)
+
+
 im.save('TestLines.png')
+
+row1 = ['123479', '12378', '1467', '234589', '134679', '12389', '123679']
+row2 = ['13467', '1245', '13469', '2368', '368', '258', '123456', ]
