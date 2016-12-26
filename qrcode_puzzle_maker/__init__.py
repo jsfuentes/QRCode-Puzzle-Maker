@@ -1,0 +1,1 @@
+from QRcodeAnalyzer import qrcode_puzzle_maker

@@ -3,6 +3,48 @@ import wordSelector
 #(255, 255, 255, 255) is white
 #(0, 0, 0, 255) is black
 
+class qrcode_puzzle_maker:
+    def __init__(self, im):
+        self.im = Image.open(im)
+        self.pix = self.im.load()
+        print("SIZE: ", self.im.size)
+        startX, startY = findStart(self.im, self.pix, "black")
+        box = findBoxSize(self.im, startX, startY, self.pix)
+        colorBox(self.im, startX, startY, box, self.pix)
+        print("Box:", box)
+        #averageEachBox(self.im, startX,startY, box, pix)
+        drawGridLines(self.im, startX, startY, box, self.pix)
+        # rows = []
+        # for j in range(0, int(im.size[1]/box[1]-1)):
+        #     row = []
+        #     for i in range(0, int(im.size[0]/box[0]-1)):
+        #         curBoxX, curBoxY = getStartOfBlock(startX, startY, i, j, box)
+        #         black = checkBlock(curBoxX, curBoxY, box, pix)
+        #         if black:
+        #             colorBox(im, curBoxX, curBoxY, box, pix, (0, 256, 56, 256))
+        #         row.append(black)
+        #     rows.append(row)
+        # for row in rows:
+        #     print(row)
+        # strings = rowsToStrings(rows)
+        # for str in strings:
+        #     print(str)
+        # strToWords = wordSelector.intializeDicts()
+        # for string in strings:
+        #     for str in string:
+        #         if str[0] == '1':
+        #                 str = str[1:]
+        #         if len(str) > 4:
+        #             if str[::2] in strToWords and str[1::2] in strToWords:
+        #                 print(str, strToWords[str[::2]], strToWords[str[1::2]])
+        #                 break
+        #         if str in strToWords:
+        #             print(str, strToWords[str])
+        self.save("TestClass.png")
+
+    def save(self, newIm):
+        self.im.save(newIm)
+
 def findStart(im, pix, color, startX=0, startY=0):
     done = False
     for k in range(startX, min(im.size[0], im.size[1])):
@@ -133,44 +175,3 @@ def rowsToStrings(rows):
             string.append(str)
         strings.append(string)
     return strings
-
-
-im = Image.open('FINISH LINE.png')
-pix = im.load()
-print("SIZE: ", im.size)
-startX, startY = findStart(im, pix, "black")
-box = findBoxSize(im, startX, startY, pix)
-colorBox(im, startX, startY, box, pix)
-print("Box:", box)
-#averageEachBox(im, startX,startY, box, pix)
-drawGridLines(im, startX, startY, box, pix)
-rows = []
-for j in range(0, int(im.size[1]/box[1]-1)):
-    row = []
-    for i in range(0, int(im.size[0]/box[0]-1)):
-        curBoxX, curBoxY = getStartOfBlock(startX, startY, i, j, box)
-        black = checkBlock(curBoxX, curBoxY, box, pix)
-        if black:
-            colorBox(im, curBoxX, curBoxY, box, pix, (0, 256, 56, 256))
-        row.append(black)
-    rows.append(row)
-for row in rows:
-    print(row)
-strings = rowsToStrings(rows)
-for str in strings:
-    print(str)
-strToWords = wordSelector.intializeDicts()
-for string in strings:
-    for str in string:
-        if str[0] == '1':
-                str = str[1:]
-        if len(str) > 4:
-            if str[::2] in strToWords and str[1::2] in strToWords:
-                print(str, strToWords[str[::2]], strToWords[str[1::2]])
-                break
-        if str in strToWords:
-            print(str, strToWords[str])
-
-
-im.save('TestLines.png')
-
