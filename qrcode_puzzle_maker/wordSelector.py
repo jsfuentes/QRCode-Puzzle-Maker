@@ -1,8 +1,9 @@
 
-f = open('words.txt', 'r')
-words = f.read().split()
+
 #you need a function or something to map every letter to a block number
-def intializeDicts():
+def intializeDicts(wordsFile):
+    f = open(wordsFile, 'r')
+    words = f.read().split()
     numAlphabet = '23456789'
     alphabet = 'abcdefghijklmnopqrstuvwxyz'
     i = 0
