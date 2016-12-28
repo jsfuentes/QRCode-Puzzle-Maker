@@ -19,34 +19,41 @@ class qrcode_puzzle_maker:
         if self.trace:
             print("Box Size: ", self.box)
             self.colorBox(self.startX, self.startY)
-        # averageEachBox(self.im, startX,startY, box, pix)
-        # rows = []
-        # for j in range(0, int(im.size[1]/box[1]-1)):
-        #     row = []
-        #     for i in range(0, int(im.size[0]/box[0]-1)):
-        #         curBoxX, curBoxY = getStartOfBlock(startX, startY, i, j, box)
-        #         black = checkBlock(curBoxX, curBoxY, box, pix)
-        #         if black:
-        #             colorBox(im, curBoxX, curBoxY, box, pix, (0, 256, 56, 256))
-        #         row.append(black)
-        #     rows.append(row)
-        # for row in rows:
-        #     print(row)
-        # strings = rowsToStrings(rows)
-        # for str in strings:
-        #     print(str)
-        # strToWords = wordSelector.intializeDicts()
-        # for string in strings:
-        #     for str in string:
-        #         if str[0] == '1':
-        #                 str = str[1:]
-        #         if len(str) > 4:
-        #             if str[::2] in strToWords and str[1::2] in strToWords:
-        #                 print(str, strToWords[str[::2]], strToWords[str[1::2]])
-        #                 break
-        #         if str in strToWords:
-        #             print(str, strToWords[str])
 
+    def getStrings(self, wordsFile):
+        rows = []
+        for j in range(0, int(self.im.size[1]/self.box[1]-1)):
+            row = []
+            for i in range(0, int(self.im.size[0]/self.box[0]-1)):
+                curBoxX, curBoxY = self.getStartOfBlock(i, j)
+                black = self.checkBlock(curBoxX, curBoxY)
+                if black:
+                    self.colorBox(curBoxX, curBoxY, (0, 256, 56, 256))
+                row.append(black)
+            rows.append(row)
+        if self.trace:
+            for row in rows:
+                print(row)
+        strings = self.rowsToStrings(rows)
+        if self.trace:
+            for str in strings:
+                print(str)
+        strToWords = wordSelector.intializeDicts(wordsFile)
+        wordsDict = {}
+        for i, string in enumerate(strings):
+            for j, str in enumerate(string):
+                oneActive = "one off"
+                if str[0] == '1':
+                        str = str[1:]
+                        oneActive = "one on"
+                wordsDict[(i, j)] = [oneActive]
+                if str in strToWords:
+                    wordsDict[(i,j)].append(strToWords[str])
+                else:
+                    wordsDict[(i,j)].append("NONE")
+                if self.trace:
+                    print(str, (i,j), wordsDict[(i,j)])
+        return wordsDict
 
     def findColor(self, color, startX=0, startY=0):
         done = False
@@ -107,8 +114,8 @@ class qrcode_puzzle_maker:
             print("Total Square Size: ", self.cornerBox)
 
     def getStartOfBlock(self, x, y):
-        offsetX = int(x/2)
-        offsetY = int(y/2)
+        offsetX = int(x/self.paddingX)
+        offsetY = int(y/self.paddingY)
         return self.startX+(x*self.box[0])+offsetX, self.startY+(y*self.box[1])+offsetY
 
     def drawGridLines(self):
@@ -129,92 +136,64 @@ class qrcode_puzzle_maker:
             boxY += 1
             curBoxCoords = self.getStartOfBlock(boxX, boxY)
 
-    # def drawGridLines(self):
-    #     counter = 1
-    #     offset = 0
-    #     for x in range(self.startX, self.im.size[0]):
-    #         #print(x-startX+1, box[0], x-startX+1%box[0])
-    #         if counter == 4:
-    #             offset += 1
-    #             counter = 1
-    #         if (x-self.startX-offset) % self.box[0] == 0:
-    #             counter += 1
-    #             for y in range(self.startY, self.im.size[1]):
-    #                 self.pix[x, y] = (256, 56, 128, 256)
-    #     counter = 1
-    #     offset = 0
-    #     for y in range(self.startY, self.im.size[1]):
-    #         if counter == 4:
-    #             offset += 1
-    #             counter = 1
-    #         if (y-self.startY-offset) % self.box[1] == 0:
-    #             counter += 1
-    #             for x in range(self.startX, self.im.size[0]):
-    #                 self.pix[x, y] = (256, 56, 128, 256)
+    def checkBlock(self, startX, startY, threshold=150):
+        total = 0
+        number = 0
+        for x in range(startX, min(self.box[0]+startX, self.im.size[0])):
+            for y in range(startY, min(self.box[1]+startY, self.im.size[1])):
+                total+=self.pix[x, y][0]
+                number+=1
+        if total/number > threshold:
+            return 0
+        else:
+            return 1
+
+    def rowsToStrings(self, rows):
+        strings = []
+        for y in range(0, len(rows), 3):
+            if y + 2 >= len(rows):
+                break
+            string = []
+            for x in range(0, len(rows[0]), 3):
+                if x + 2 >= len(rows[0]):
+                    break
+                str = ""
+                if rows[y][x]:
+                    str += '1'
+                if rows[y][x+1]:
+                     str += '2'
+                if rows[y][x+2]:
+                    str += '3'
+                if rows[y+1][x]:
+                    str += '4'
+                if rows[y+1][x+1]:
+                    str += '5'
+                if rows[y+1][x+2]:
+                    str += '6'
+                if rows[y+2][x]:
+                    str += '7'
+                if rows[y+2][x+1]:
+                    str += '8'
+                if rows[y+2][x+2]:
+                    str += '9'
+                string.append(str)
+            strings.append(string)
+        return strings
 
     def save(self, newIm):
         self.im.save(newIm)
 
-test = qrcode_puzzle_maker("FINISH LINE.png", True)
-test.drawGridLines()
-test.save("TestClass.png")
 
-
-
-def averageEachBox(im, startX, startY, box, pix):
-    for i in range(startX, im.size[0], box[0]):
-        for j in range(startY, im.size[1], box[1]):
-            total = 0
-            number = 0
-            for x in range(i, min(i+box[0], im.size[0])):
-                for y in range(j, min(j+box[1], im.size[1])):
-                    total += pix[x, y][0]
-                    number += 1
-            if total/number > 120:
-                colorBox(im, i, j, box, pix, (256, 256, 256, 256))
-            else:
-                colorBox(im, i, j, box, pix, (0, 0, 0, 256))
-
-def checkBlock(startX, startY, box, pix):
-    total = 0
-    number = 0
-    for x in range(startX, min(box[0]+startX, im.size[0])):
-        for y in range(startY, min(box[1]+startY, im.size[1])):
-            total+=pix[x, y][0]
-            number+=1
-    if total/number > 150:
-        return 0
-    else:
-        return 1
-
-def rowsToStrings(rows):
-    strings = []
-    for y in range(0, len(rows), 3):
-        if y + 2 >= len(rows):
-            break
-        string = []
-        for x in range(0, len(rows[0]), 3):
-            if x + 2 >= len(rows[0]):
-                break
-            str = ""
-            if rows[y][x]:
-                str += '1'
-            if rows[y][x+1]:
-                 str += '2'
-            if rows[y][x+2]:
-                str += '3'
-            if rows[y+1][x]:
-                str += '4'
-            if rows[y+1][x+1]:
-                str += '5'
-            if rows[y+1][x+2]:
-                str += '6'
-            if rows[y+2][x]:
-                str += '7'
-            if rows[y+2][x+1]:
-                str += '8'
-            if rows[y+2][x+2]:
-                str += '9'
-            string.append(str)
-        strings.append(string)
-    return strings
+# def averageEachBox(im, startX, startY, box, pix):
+#     for i in range(startX, im.size[0], box[0]):
+#         for j in range(startY, im.size[1], box[1]):
+#             total = 0
+#             number = 0
+#             for x in range(i, min(i+box[0], im.size[0])):
+#                 for y in range(j, min(j+box[1], im.size[1])):
+#                     total += pix[x, y][0]
+#                     number += 1
+#             if total/number > 120:
+#                 colorBox(im, i, j, box, pix, (256, 256, 256, 256))
+#             else:
+#                 colorBox(im, i, j, box, pix, (0, 0, 0, 256))
